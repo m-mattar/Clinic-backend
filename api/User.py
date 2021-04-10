@@ -1,7 +1,8 @@
-from flask import request, jsonify
+from flask import request, jsonify, abort
 
-from app import app, db
+from app import app, db, bcrypt
 from models.User import User, UserSchema
+from api.Auth import create_token, extract_auth_token, decode_token
 
 user_schema = UserSchema()
 
@@ -17,3 +18,39 @@ def create_user():
     db.session.commit()
 
     return jsonify(user_schema.dump(user))
+
+
+@app.route('/user', methods=['PATCH'])
+def update_user():
+    # check if user is logged in
+    token = extract_auth_token(request)
+    if token is None:
+        abort(401)
+
+    # check if the updates are allowed
+    allowed_updates = {"user_name", "password"}
+    for update in request.args.keys():
+        if update not in allowed_updates:
+            abort(403)
+
+    # update the user
+    try:
+        user_id = decode_token(token)
+        user = User.query.filter_by(id=user_id).first()
+
+        # TODO: this is not updating the user, recheck
+        for update in request.args:
+            print(update)
+            user[update] = request[update]
+
+        db.session.commit()
+
+    except:
+        abort(500)
+
+    return jsonify("User updated")
+
+
+@app.route('/user', methods=['DELETE'])
+def delete_user():
+    return

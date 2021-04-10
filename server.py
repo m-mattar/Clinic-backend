@@ -4,3 +4,4 @@ from app import app
 import api.User
 import api.Report
 import api.Appointment
+import api.Auth
