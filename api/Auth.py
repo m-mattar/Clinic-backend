@@ -1,10 +1,12 @@
-from flask import request, abort, jsonify
-from app import app, bcrypt
+from flask import request, abort, jsonify, Blueprint
+from app import bcrypt
 from models.User import User
 import datetime
 import jwt
 
 SECRET_KEY = "b'|\xe7\xbfU3`\xc4\xec\xa7\xa9zf:}\xb5\xc7\xb9\x139^3@Dv'"
+
+app_auth = Blueprint('app_auth', __name__)
 
 
 def create_token(user_id):
@@ -33,7 +35,7 @@ def decode_token(token):
     return payload['sub']
 
 
-@app.route('/authentication', methods=['POST'])
+@app_auth.route('/authentication', methods=['POST'])
 def authentication():
     user_name = request.json["user_name"]
     password = request.json["password"]
@@ -44,7 +46,7 @@ def authentication():
     # check if user exists
     user = User.query.filter_by(user_name=user_name).first()
     if user is None:
-        abort(403, 'User not found')
+        abort(404, 'User not found')
 
     if not bcrypt.check_password_hash(user.hashed_password, password):
         abort(403, 'Incorrect username or password')

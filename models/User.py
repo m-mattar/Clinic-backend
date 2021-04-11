@@ -1,9 +1,4 @@
-from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
-from app import bcrypt
-
-ma = Marshmallow()
-db = SQLAlchemy()
+from app import db, ma, bcrypt
 
 
 class User(db.Model):

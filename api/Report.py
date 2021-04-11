@@ -1,6 +1,8 @@
-from app import app
+from flask import Blueprint
+
+app_report = Blueprint('app_report', __name__)
 
 
-@app.route('/report/test', methods=['GET'])
+@app_report.route('/report/test', methods=['GET'])
 def create_report():
     return 'youuuppiii!!!!'

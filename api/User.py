@@ -1,13 +1,14 @@
-from flask import request, jsonify, abort
-
-from app import app, db, bcrypt
+from flask import request, jsonify, abort, Blueprint
+from app import db, bcrypt
 from models.User import User, UserSchema
-from api.Auth import create_token, extract_auth_token, decode_token
+from api.Auth import extract_auth_token, decode_token
 
 user_schema = UserSchema()
 
+app_user = Blueprint('app_user', __name__)
 
-@app.route('/user', methods=['POST'])
+
+@app_user.route('/user', methods=['POST'])
 def create_user():
     user_name = request.json["user_name"]
     password = request.json["password"]
@@ -20,7 +21,7 @@ def create_user():
     return jsonify(user_schema.dump(user))
 
 
-@app.route('/user', methods=['PATCH'])
+@app_user.route('/user', methods=['PATCH'])
 def update_user():
     # check if user is logged in
     token = extract_auth_token(request)
@@ -29,28 +30,53 @@ def update_user():
 
     # check if the updates are allowed
     allowed_updates = {"user_name", "password"}
-    for update in request.args.keys():
+    for update in request.json:
         if update not in allowed_updates:
-            abort(403)
+            abort(400)
 
     # update the user
+    user = None
     try:
         user_id = decode_token(token)
+        print(user_id)
         user = User.query.filter_by(id=user_id).first()
 
-        # TODO: this is not updating the user, recheck
-        for update in request.args:
-            print(update)
-            user[update] = request[update]
+        for update in request.json:
+            if update == "user_name":
+                user.user_name = request.json[update]
+            elif update == "password":
+                user.hashed_password = bcrypt.generate_password_hash(request.json[update])
 
         db.session.commit()
 
-    except:
-        abort(500)
+    except Exception as e:
+        print(e)
+        abort(500, "Could not update profile")
 
-    return jsonify("User updated")
+    return jsonify("User updated", user_schema.dump(user))
 
 
-@app.route('/user', methods=['DELETE'])
+@app_user.route('/user', methods=['DELETE'])
 def delete_user():
-    return
+    # check if user is logged in
+    token = extract_auth_token(request)
+    if token is None:
+        abort(401)
+
+    try:
+        user_id = decode_token(token)
+        print(user_id)
+        user = User.query.filter_by(id=user_id).first()
+
+        if user is None:
+            abort(404, "User not found")
+
+        print(user.user_name)
+        db.session.delete(user)
+        db.session.commit()
+
+    except Exception as e:
+        print(e)
+        abort(500, "Not able to delete user")
+
+    return jsonify("User Deleted")
