@@ -12,9 +12,8 @@ app_user = Blueprint('app_user', __name__)
 def create_user():
     user_name = request.json["user_name"]
     password = request.json["password"]
-    is_doctor = request.json["is_doctor"]
 
-    user = User(user_name, password, is_doctor)
+    user = User(user_name, password)
     db.session.add(user)
     db.session.commit()
 

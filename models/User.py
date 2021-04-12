@@ -7,14 +7,14 @@ class User(db.Model):
     hashed_password = db.Column(db.String(128))
     is_doctor = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, user_name, password, is_doctor):
-        super(User, self).__init__(user_name=user_name, is_doctor=is_doctor)
+    def __init__(self, user_name, password):
+        super(User, self).__init__(user_name=user_name, is_doctor=False)
         self.hashed_password = bcrypt.generate_password_hash(password)
 
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ("id", "user_name", "is_doctor")
+        fields = ("id", "user_name")
         model = User
 
 
