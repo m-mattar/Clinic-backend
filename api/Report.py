@@ -52,7 +52,7 @@ def change_report_appointment_id():
 
     return jsonify(report_schema.dump(report))
 
-@app_report.route('/reports/AppointmentID', methods=['DELETE'])
+@app_report.route('/reports', methods=['DELETE'])
 def delete_report():
     token = extract_auth_token(request)
     user_id = None
