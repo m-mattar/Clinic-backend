@@ -82,3 +82,17 @@ def all_reports():
 
     reports = Report.query.all()
     return jsonify(reports_schema.dumb(reports))
+
+
+@app_report.route('/reports/AppointmentID', methods=['GET'])
+def appointment_reports():
+    token = extract_auth_token(request)
+    user_id = None
+    if token is not None:
+        try:
+            user_id = decode_token(token)
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            abort(403)
+
+    report = Report.query.filter_by(appointment_id=request.json['appointment_id']).first()
+    return jsonify(report_schema.dumb(report))
