@@ -16,3 +16,4 @@ class ReportSchema(ma.Schema):
         model = Report
 
 report_schema = ReportSchema()
+reports_schema = ReportSchema(many=True)
