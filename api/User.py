@@ -54,11 +54,15 @@ def read_user(username):
         if user_id is None:
             abort(401, "You are not logged in")
 
-        user = User.query.filter_by(user_name=username).first()
-        if user is None:
+        user = User.query.filter_by(id=user_id).first()
+        user_to_view = User.query.filter_by(user_name=username).first()
+
+        if user_to_view is None:
             abort(404)
-        if not user.is_doctor:
-            abort(401, "The user you are trying to view is not a doctor")
+
+        # Drs can view anyone, normal users cannot
+        if not user.is_doctor and not user_to_view.is_doctor:
+            abort(401, "You cannot view this profile")
 
     except Exception as e:
         print(e)
@@ -67,25 +71,10 @@ def read_user(username):
     return jsonify(user_schema.dump(user))
 
 
-# TODO(not returning properly)
 @app_user.route('/doctors', methods=['GET'])
 def read_doctors():
-    token = extract_auth_token(request)
-    if token is None:
-        abort(401)
-
-    doctors = None
-    try:
-        user_id = decode_token(token)
-        if user_id is None:
-            abort(401, "You are not logged in")
-
-        doctors = User.query.filter_by(is_doctor=True).all()
-    except Exception as e:
-        print(e)
-        abort(500)
-
-    print(doctors)
+    doctors = User.query.filter_by(is_doctor=True).all()
+    user_schema.many = True
     return jsonify(user_schema.dump(doctors))
 
 
@@ -97,7 +86,7 @@ def update_user():
         abort(401)
 
     # check if the updates are allowed
-    allowed_updates = {"user_name", "password"}
+    allowed_updates = {"user_name", "password", "information", "first_name", "last_name"}
     for update in request.json:
         if update not in allowed_updates:
             abort(400)
@@ -110,11 +99,16 @@ def update_user():
         user = User.query.filter_by(id=user_id).first()
 
         for update in request.json:
-            if update == "user_name":
-                user.user_name = request.json[update]
-            elif update == "password":
+            if update == "password":
                 user.hashed_password = bcrypt.generate_password_hash(request.json[update])
-
+            elif update == "user_name":
+                user.user_name = request.json[update]
+            elif update == "first_name":
+                user.first_name = request.json[update]
+            elif update == "last_name":
+                user.last_name = request.json[update]
+            elif update == "information":
+                user.information = request.json[update]
         db.session.commit()
 
     except Exception as e:
@@ -139,7 +133,6 @@ def delete_user():
         if user is None:
             abort(404, "User not found")
 
-        print(user.user_name)
         db.session.delete(user)
         db.session.commit()
 
