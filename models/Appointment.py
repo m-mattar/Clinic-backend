@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import db
+from app import db,ma, bcrypt
 
 
 class Appointment(db.Model):
@@ -14,3 +14,9 @@ class Appointment(db.Model):
         super(Appointment, self).__init__(doctor_id=doctor_id, patient_id=patient_id,
                                           appointment_description=appointment_description)
         self.appointment_time = datetime.strptime(appointment_time, '%Y-%m-%dT%H:%M')
+class AppointmentSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "doctor_id", "patient_id", "appointment_time", "appointment_description")
+        model = Appointment
+
+appointment_scheme=AppointmentSchema()

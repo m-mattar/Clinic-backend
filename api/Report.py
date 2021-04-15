@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, abort
-from Auth import extract_auth_token, decode_token
+from api.Auth import extract_auth_token, decode_token
 import jwt
 from models.Report import Report, report_schema
 from models.User import User
