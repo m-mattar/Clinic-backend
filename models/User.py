@@ -10,12 +10,12 @@ class User(db.Model):
     is_doctor = db.Column(db.Boolean, nullable=False)
     information = db.Column(db.String(400), nullable=True, unique=False)
 
-    def __init__(self, user_name, first_name, last_name, information, password):
+    def __init__(self, user_name, first_name, last_name, information, is_doctor, password):
         super(User, self).__init__(user_name=user_name,
                                    first_name=first_name,
                                    last_name=last_name,
                                    information=information,
-                                   is_doctor=False)
+                                   is_doctor=is_doctor)
         self.hashed_password = bcrypt.generate_password_hash(password)
 
 

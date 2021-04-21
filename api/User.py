@@ -8,15 +8,30 @@ user_schema = UserSchema()
 app_user = Blueprint('app_user', __name__)
 
 
+def is_admin_login(req):
+    token = extract_auth_token(req)
+
+    user_id = decode_token(token)
+    user = User.query.filter_by(id=user_id).first()
+    if user is None or user.user_name != "admin":
+        return False
+
+    return True
+
+
 @app_user.route('/user', methods=['POST'])
 def create_user():
+    if not is_admin_login(request):
+        abort(401)
+
     user_name = request.json["user_name"]
     password = request.json["password"]
     first_name = request.json["first_name"]
     last_name = request.json["last_name"]
     information = request.json["information"]
+    is_doctor = request.json["is_doctor"]
 
-    user = User(user_name, first_name, last_name, information, password)
+    user = User(user_name, first_name, last_name, information, is_doctor, password)
     db.session.add(user)
     db.session.commit()
 
@@ -60,8 +75,8 @@ def read_user(username):
         if user_to_view is None:
             abort(404)
 
-        # Drs can view anyone, normal users cannot
-        if not user.is_doctor and not user_to_view.is_doctor:
+        # Admins and Drs can view anyone, normal users cannot
+        if not user.user_name == "admin" and not user.is_doctor and not user_to_view.is_doctor:
             abort(401, "You cannot view this profile")
 
     except Exception as e:
@@ -78,11 +93,9 @@ def read_doctors():
     return jsonify(user_schema.dump(doctors))
 
 
-@app_user.route('/user', methods=['PATCH'])
-def update_user():
-    # check if user is logged in
-    token = extract_auth_token(request)
-    if token is None:
+@app_user.route('/user/<username>', methods=['PATCH'])
+def update_user(username):
+    if not is_admin_login(request):
         abort(401)
 
     # check if the updates are allowed
@@ -94,9 +107,7 @@ def update_user():
     # update the user
     user = None
     try:
-        user_id = decode_token(token)
-        print(user_id)
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=username).first()
 
         for update in request.json:
             if update == "password":
@@ -118,17 +129,13 @@ def update_user():
     return jsonify("User updated", user_schema.dump(user))
 
 
-@app_user.route('/user', methods=['DELETE'])
-def delete_user():
-    # check if user is logged in
-    token = extract_auth_token(request)
-    if token is None:
+@app_user.route('/user/<username>', methods=['DELETE'])
+def delete_user(username):
+    if not is_admin_login(request):
         abort(401)
 
     try:
-        user_id = decode_token(token)
-        print(user_id)
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=username).first()
 
         if user is None:
             abort(404, "User not found")
