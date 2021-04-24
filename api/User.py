@@ -86,6 +86,25 @@ def read_user(username):
     return jsonify(user_schema.dump(user))
 
 
+@app_user.route('/users', methods=['GET'])
+def read_all_users():
+    if not is_admin_login(request):
+        abort(401)
+
+    users = None
+    try:
+        users = User.query.all()
+        if users is None:
+            abort(404)
+
+    except Exception as e:
+        print(e)
+        abort(500)
+
+    user_schema.many = True
+    return jsonify(user_schema.dump(users))
+
+
 @app_user.route('/doctors', methods=['GET'])
 def read_doctors():
     doctors = User.query.filter_by(is_doctor=True).all()
@@ -108,6 +127,9 @@ def update_user(username):
     user = None
     try:
         user = User.query.filter_by(id=username).first()
+
+        if user is None:
+            abort(404, "User not found")
 
         for update in request.json:
             if update == "password":
