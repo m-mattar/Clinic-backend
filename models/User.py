@@ -21,7 +21,7 @@ class User(db.Model):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ("id", "user_name", "first_name", "last_name", "information")
+        fields = ("id", "user_name", "first_name", "last_name", "information", "is_doctor")
         model = User
 
 
