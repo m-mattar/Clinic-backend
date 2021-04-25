@@ -52,8 +52,19 @@ def authentication():
         abort(403, 'Incorrect username or password')
 
     token = create_token(user.id)
+
+    # 0 -> admin
+    # 1 -> doctor
+    # 2 -> patient
+    isDoctor = 2
+    if user.is_doctor == 1:
+        isDoctor = 1
+    elif user.user_name == "admin":
+        isDoctor = 0
+
     return jsonify(
         {
-            "token": token
+            "token": token,
+            "is_doctor": isDoctor
         }
     )
