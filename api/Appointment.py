@@ -27,7 +27,7 @@ def book_appointment():
     db.session.add(appo)
     db.session.commit()
     return jsonify(appointment_schema.dump(appo))
-@app_appointment.route('/appointment_dr', methods=['GET'])
+@app_appointment.route('/appointment_dr', methods=['POST'])
 def doctor_appointments():
     token=extract_auth_token(request)
     if(token==None):
@@ -126,4 +126,22 @@ def get():
     ret=jsonify(appointments_schema.dump(ar))
     return ret
         
+@app_appointment.route('/appointment_drs', methods=['GET'])
+def getDrsApts():
+    token=extract_auth_token(request)
+    user_id=None
+    if(token==None):
+        abort(403)
+    try:
+        user_id=decode_token(token)
+    except:
+        abort(403)
+    print(user_id)
+    ar=Appointment.query.filter_by(doctor_name=User.query.filter_by(id=user_id).first().user_name).all()
+    print(ar)
+    ret=jsonify(appointments_schema.dump(ar))
+    return ret
+        
+		
+
     

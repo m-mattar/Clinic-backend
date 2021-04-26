@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, jsonify, abort, request
 from api.Auth import extract_auth_token, decode_token
 import jwt
+from app import db, bcrypt
 from models.Report import Report, report_schema, reports_schema
 from models.User import User
 
@@ -18,7 +19,7 @@ def create_report():
             abort(403)
 
     user = User.query.filter_by(id=user_id).first()
-    if not user.isDoctor:
+    if not user.is_doctor:
         abort(403)
 
     report = Report(
@@ -81,10 +82,10 @@ def all_reports():
             abort(403)
 
     reports = Report.query.all()
-    return jsonify(reports_schema.dumb(reports))
+    return jsonify(reports_schema.dump(reports))
 
 
-@app_report.route('/reports/AppointmentID', methods=['GET'])
+@app_report.route('/reports/AppointmentID', methods=['POST'])
 def appointment_reports():
     token = extract_auth_token(request)
     user_id = None
@@ -95,4 +96,4 @@ def appointment_reports():
             abort(403)
 
     report = Report.query.filter_by(appointment_id=request.json['appointment_id']).first()
-    return jsonify(report_schema.dumb(report))
+    return jsonify(report_schema.dump(report))
