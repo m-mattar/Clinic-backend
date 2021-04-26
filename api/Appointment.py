@@ -53,11 +53,8 @@ def update_appt():
     # update the user
     appt=request.json['id']
     appt=Appointment.query.filter_by(id=appt).first()
-    if(appt.patient_id!=user_id):
-        abort(403)
-    else:
-        appt.appointment_description=request.json["appointment_description"]
-        db.session.commit()
+    appt.appointment_description=request.json["appointment_description"]
+    db.session.commit()
     return jsonify(appointment_schema.dump(appt))    
 
 @app_appointment.route('/appointment_time', methods=['PATCH'])
