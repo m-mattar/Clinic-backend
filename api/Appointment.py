@@ -27,6 +27,7 @@ def book_appointment():
     db.session.add(appo)
     db.session.commit()
     return jsonify(appointment_schema.dump(appo))
+
 @app_appointment.route('/appointment_dr', methods=['GET'])
 def doctor_appointments():
     token=extract_auth_token(request)
@@ -39,6 +40,7 @@ def doctor_appointments():
     appt=Appointment.query.filter_by(doctor_name=request.json['doctor_name']).all()
     ret=jsonify(appointments_schema.dump(appt))
     return ret
+
 @app_appointment.route('/appointment', methods=['PATCH'])
 def update_appt():
     # check if user is logged in
@@ -86,7 +88,8 @@ def update_time():
     
     appt.appointment_time=new_time
     db.session.commit()
-    return jsonify(appointment_schema.dump(appt))    
+    return jsonify(appointment_schema.dump(appt))
+
 @app_appointment.route('/appointment', methods=['DELETE'])
 def delete_appt():
     # check if user is logged in
