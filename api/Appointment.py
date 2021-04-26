@@ -96,11 +96,9 @@ def delete_appt():
     # update the user
     appt=request.json['id']
     appt=Appointment.query.filter_by(id=appt).first()
-    if(appt.patient_id!=user_id):
-        abort(403)
-    else:
-        db.session.delete(appt)
-        db.session.commit()
+
+    db.session.delete(appt)
+    db.session.commit()
     return jsonify("Appointment Deleted")
 
 
