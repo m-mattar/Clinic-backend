@@ -12,8 +12,7 @@ import jwt
 
 app = Flask(__name__)
 
-app.config[
-'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@localhost:3306/hospital'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Arsenal.123@localhost:3306/hospital'
 SECRET_KEY = "b'|\xe7\xbfU3`\xc4\xec\xa7\xa9zf:}\xb5\xc7\xb9\x139^3@Dv'"
 ma = Marshmallow(app)
 CORS(app)
@@ -48,7 +47,7 @@ class Appointment(db.Model):
     appointment_description = db.Column(db.String(300), nullable=True)
     appointment_zoom=db.Column(db.String(300), nullable=True)
     def __init__(self, doctor_name, patient_id, appointment_time, appointment_description):
-        # assume that it comes like that 
+        # assume that it comes like that
         super(Appointment, self).__init__(doctor_name=doctor_name, patient_id=patient_id,
                                           appointment_description=appointment_description)
         self.appointment_time = datetime.strptime(appointment_time, '%Y-%m-%dT%H:%M')
@@ -61,5 +60,3 @@ class Report(db.Model):
 
     def __init__(self, description, appointment_id):
         super(Report, self).__init__(description=description, appointment_id=appointment_id)
-
-# User Marshmallow schema
