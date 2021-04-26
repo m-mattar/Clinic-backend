@@ -15,7 +15,7 @@ class Appointment(db.Model):
                                           appointment_description=appointment_description)
         self.appointment_time = datetime.strptime(appointment_time, '%Y-%m-%dT%H:%M')
         stran=[random.randint(0,10) for i in range(10)]
-        self.appointment_zoom="zoom.us."+str("".join(map(str,stran)))
+        self.appointment_zoom="zoom.us/"+doctor_name+"/"+str("".join(map(str,stran)))
 class AppointmentSchema(ma.Schema):
     class Meta:
         fields = ("id", "doctor_name", "patient_id", "appointment_time", "appointment_description","appointment_zoom")
