@@ -19,8 +19,6 @@ def create_report():
             abort(403)
 
     user = User.query.filter_by(id=user_id).first()
-    if not user.is_doctor:
-        abort(403)
 
     report = Report(
         description=request.json['description'],

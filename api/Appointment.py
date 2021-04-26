@@ -73,8 +73,6 @@ def update_time():
     # update the user
     appt=request.json['id']
     appt=Appointment.query.filter_by(id=appt).first()
-    if(appt.patient_id!=user_id):
-        abort(403)
     
     new_time=datetime.strptime(request.json['appointment_time'], '%Y-%m-%dT%H:%M')
     user_times=Appointment.query.filter_by(appointment_time=new_time).filter_by(patient_id=appt.patient_id).first()
