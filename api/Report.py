@@ -30,6 +30,27 @@ def create_report():
 
     return jsonify(report_schema.dump(report))
 
+@app_report.route('/reports', methods=['PATCH'])
+def change_report_description():
+    token = extract_auth_token(request)
+    user_id = None
+    if token is not None:
+        try:
+            user_id = decode_token(token)
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            abort(403)
+
+    user = User.query.filter_by(id=user_id).first()
+    if not user.isDoctor:
+        abort(403)
+
+    report = Report.query.filter_by(appointment_id=request.json['appointment_id']).first()
+    report.description = request.json['description']
+
+    db.session.commit()
+
+    return jsonify(report_schema.dump(report))
+
 @app_report.route('/reports/AppointmentID', methods=['PATCH'])
 def change_report_appointment_id():
     token = extract_auth_token(request)
