@@ -13,7 +13,7 @@ import jwt
 app = Flask(__name__)
 
 app.config[
-'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:lobster@localhost:3306/hospital'
+'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:finally@localhost:3306/hospital'
 SECRET_KEY = "b'|\xe7\xbfU3`\xc4\xec\xa7\xa9zf:}\xb5\xc7\xb9\x139^3@Dv'"
 ma = Marshmallow(app)
 CORS(app)
@@ -42,14 +42,14 @@ class User(db.Model):
 
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    doctor_name = db.Column(db.String(30), nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     appointment_time = db.Column(db.DateTime)
     appointment_description = db.Column(db.String(300), nullable=True)
-
-    def __init__(self, doctor_id, patient_id, appointment_time, appointment_description):
+    appointment_zoom=db.Column(db.String(300), nullable=True)
+    def __init__(self, doctor_name, patient_id, appointment_time, appointment_description):
         # assume that it comes like that 
-        super(Appointment, self).__init__(doctor_id=doctor_id, patient_id=patient_id,
+        super(Appointment, self).__init__(doctor_name=doctor_name, patient_id=patient_id,
                                           appointment_description=appointment_description)
         self.appointment_time = datetime.strptime(appointment_time, '%Y-%m-%dT%H:%M')
 
