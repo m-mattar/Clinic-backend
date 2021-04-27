@@ -35,6 +35,7 @@ To make things simple, all database models are available in the `initializer.py`
 
 First, you need to create a new mysql schema, call it "hospital".
 In the `app/__init__.py` file, you can find the link to your local database at line 16, please put your password in place of "password"
+The above should also be done in `initializer.py`line 17
 
 Using the Command Prompt, Enter : `python`
 This will open a python shell
@@ -64,9 +65,14 @@ The frontend can be found here: https://github.com/HusseinJaber20/Clinic---430
 The admin has absolute priviledges on the Application, hence creating it requires direct backend or database access.
 
 - Option 1 : Manually add the admin user from the database
+  * However this is not recommended as passwords are hashed in the database
 - Option 2 : 
   * Go to the api/User.py file
-  * Comment out line 24 and 25 ( "if not is_admin_login(request)" condition )
+  * Comment out line 13 and 14
+     ```
+     # if not is_admin_login(request)":
+     #    abort(401)
+     ```
   * Run the Backend
   * Create the admin user from the fronted. Note that it is required that the username used for the admin is "admin"
   * Uncomment the previously commented lines
