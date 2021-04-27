@@ -61,7 +61,6 @@ def delete_report():
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             abort(403)
 
-    user = User.query.filter_by(id=user_id).first()
 
     report = Report.query.filter_by(appointment_id=request.json['appointment_id']).first()
     db.session.delete(report)

@@ -163,8 +163,6 @@ def delete_user(username):
 
 @app_user.route('/users/number', methods=['GET'])
 def get_num_apps():
-    if not is_admin_login(request):
-        abort(401)
 
     users_number = len(User.query.all()) - 1
     doctors_number = len(User.query.filter_by(is_doctor=True).all())
