@@ -15,33 +15,35 @@ It involves a REST Flask API and was built using Python and a mysql database.
 ## Setup
 
 ### Step 1 : Install Flask
-Using the command prompt, Enter : pip install Flask
+Using the command prompt, Enter : `pip install Flask`
 You could also create a virtual environment and install Flask within it, if so, all the below steps must be done in the environment.
 
 ### Step 2 : Clone the repository
 In order to clone the backend repository :
 Create a new folder, anywhere in your PC
 Open Command Prompt and change the directory into the folder created
-Enter : git clone https://github.com/m-mattar/430-project-backend
+Enter : `git clone https://github.com/m-mattar/430-project-backend`
 
 ### Step 3 : Install Packages
-All the direct and transitive dependencies are available in the requirements.txt file
+All the direct and transitive dependencies are available in the `requirements.txt` file
 
-Using the Command Prompt, Enter : pip install -r requirements.txt
+Using the Command Prompt, Enter : `pip install -r requirements.txt`
 Make sure that the Command Prompt is pointing to the "430-project-backend" folder
 
 ### Step 4 : Initialize the local database
-To make things simple, all database models are available in the initializer.py file
+To make things simple, all database models are available in the `initializer.py` file
 
 First, you need to create a new mysql schema, call it "hospital".
-In the app/__init__.py file, you can find the link to your local database at line 16, please put your password in place of "password"
+In the `app/__init__.py` file, you can find the link to your local database at line 16, please put your password in place of "password"
 
-Using the Command Prompt, Enter : python
+Using the Command Prompt, Enter : `python`
 This will open a python shell
 Enter the below commands:
+```
 from initializer import db
 db.create_all()
 exit()
+```
 
 You have successfully initialized your database!
 
