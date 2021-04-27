@@ -14,23 +14,23 @@ It involves a REST Flask API and was built using Python and a mysql database.
 
 ## Setup
 
-# Step 1 : Install Flask
+### Step 1 : Install Flask
 Using the command prompt, Enter : pip install Flask
 You could also create a virtual environment and install Flask within it, if so, all the below steps must be done in the environment.
 
-# Step 2 : Clone the repository
+### Step 2 : Clone the repository
 In order to clone the backend repository :
 Create a new folder, anywhere in your PC
 Open Command Prompt and change the directory into the folder created
 Enter : git clone https://github.com/m-mattar/430-project-backend
 
-# Step 3 : Install Packages
+### Step 3 : Install Packages
 All the direct and transitive dependencies are available in the requirements.txt file
 
 Using the Command Prompt, Enter : pip install -r requirements.txt
 Make sure that the Command Prompt is pointing to the "430-project-backend" folder
 
-# Step 4 : Initialize the local database
+### Step 4 : Initialize the local database
 To make things simple, all database models are available in the initializer.py file
 
 First, you need to create a new mysql schema, call it "hospital".
@@ -45,28 +45,28 @@ exit()
 
 You have successfully initialized your database!
 
-# Step 5 : Run the Backend
+### Step 5 : Run the Backend
 In order to run the Backend, you need to enter the following commands in your Command Prompt:
 set FLASK_APP=server.py
 flask run
 
 Your backend is now running on port 5000!
 
-# Step 6 : Run the Frontend
+### Step 6 : Run the Frontend
 Please see the Backend's Repo for more details on how to run the application's frontend. You can find the link below!
 The frontend can be found here: https://github.com/HusseinJaber20/Clinic---430
 
-# Note : creating the admin account
+### Note : creating the admin account
 The admin has absolute priviledges on the Application, hence creating it requires direct backend or database access.
 
 - Option 1 : Manually add the admin user from the database
 - Option 2 : 
-  > Go to the api/User.py file
-  > Comment out line 24 and 25 ( "if not is_admin_login(request)" condition )
-  > Run the Backend
-  > Create the admin user from the fronted. Note that it is required that the username used for the admin is "admin"
-  > Uncomment the previously commented lines
-  > Run your backend again
+  * Go to the api/User.py file
+  * Comment out line 24 and 25 ( "if not is_admin_login(request)" condition )
+  * Run the Backend
+  * Create the admin user from the fronted. Note that it is required that the username used for the admin is "admin"
+  * Uncomment the previously commented lines
+  * Run your backend again
 
 Everything is now perfectly set up!
 
