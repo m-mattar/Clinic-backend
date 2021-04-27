@@ -18,7 +18,7 @@ def book_appointment():
     try:
         user_id=decode_token(token)
     except:
-        abort(403)  
+        abort(403)
     new_time=datetime.strptime(request.json['appointment_time'], '%Y-%m-%dT%H:%M')
     user_times=Appointment.query.filter_by(appointment_time=new_time).filter_by(patient_id=user_id).first()
     doc_times=Appointment.query.filter_by(appointment_time=new_time).filter_by(doctor_name=request.json['doctor_name']).first()
@@ -44,7 +44,10 @@ def doctor_appointments():
     try:
         user_id=decode_token(token)
     except:
-        abort(403)  
+        abort(403)
+
+    if (len(User.query.filter_by(user_name=request.json['doctor_name'], is_doctor=True).all()) == 0):
+        abort(403)
     appt=Appointment.query.filter_by(doctor_name=request.json['doctor_name']).all()
     if(appt==None):
         return "there are no appointments for this name"
@@ -136,7 +139,22 @@ def get():
     ret=jsonify(newlist)
     return ret
         
-
+@app_appointment.route('/appointment_drs', methods=['GET'])
+def getDrsApts():
+    token=extract_auth_token(request)
+    user_id=None
+    if(token==None):
+        abort(403)
+    try:
+        user_id=decode_token(token)
+    except:
+        abort(403)
+    print(user_id)
+    ar=Appointment.query.filter_by(doctor_name=User.query.filter_by(id=user_id).first().user_name).all()
+    ka = appointments_schema.dump(ar)
+    newlist = sorted(ka, key=lambda k: k['appointment_time'])
+    ret = jsonify(newlist)
+    return ret
 		
 
     
