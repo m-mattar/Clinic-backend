@@ -62,8 +62,6 @@ def delete_report():
             abort(403)
 
     user = User.query.filter_by(id=user_id).first()
-    if not user.is_doctor:
-        abort(403)
 
     report = Report.query.filter_by(appointment_id=request.json['appointment_id']).first()
     db.session.delete(report)
