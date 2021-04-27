@@ -170,8 +170,6 @@ def getDrsApts():
 
 @app_appointment.route('/appointments/number', methods=['GET'])
 def get_num_apps():
-    if not is_admin_login(request):
-        abort(401)
 
     appts = Appointment.query.all()
     number = len(appts)
