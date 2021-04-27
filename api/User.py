@@ -1,28 +1,17 @@
 from flask import request, jsonify, abort, Blueprint
 from app import db, bcrypt
 from models.User import User, UserSchema
-from api.Auth import extract_auth_token, decode_token
+from api.Auth import extract_auth_token, decode_token, is_admin_login
 
 user_schema = UserSchema()
 
 app_user = Blueprint('app_user', __name__)
 
 
-def is_admin_login(req):
-    token = extract_auth_token(req)
-
-    user_id = decode_token(token)
-    user = User.query.filter_by(id=user_id).first()
-    if user is None or user.user_name != "admin":
-        return False
-
-    return True
-
-
 @app_user.route('/user', methods=['POST'])
 def create_user():
-    if not is_admin_login(request):
-        abort(401)
+    # if not is_admin_login(request):
+    #     abort(401)
 
     user_name = request.json["user_name"]
     password = request.json["password"]
@@ -170,3 +159,19 @@ def delete_user(username):
         abort(500, "Not able to delete user")
 
     return jsonify("User Deleted")
+
+
+@app_user.route('/users/number', methods=['GET'])
+def get_num_apps():
+    if not is_admin_login(request):
+        abort(401)
+
+    users_number = len(User.query.all()) - 1
+    doctors_number = len(User.query.filter_by(is_doctor=True).all())
+    patients_number = users_number - doctors_number
+
+    return jsonify({
+        "users_number": users_number,
+        "doctors_number": doctors_number,
+        "patients_number":  patients_number
+    })

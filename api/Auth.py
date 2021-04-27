@@ -68,3 +68,14 @@ def authentication():
             "is_doctor": isDoctor
         }
     )
+
+
+def is_admin_login(req):
+    token = extract_auth_token(req)
+
+    user_id = decode_token(token)
+    user = User.query.filter_by(id=user_id).first()
+    if user is None or user.user_name != "admin":
+        return False
+
+    return True
