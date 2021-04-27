@@ -21,8 +21,8 @@ def is_admin_login(req):
 
 @app_user.route('/user', methods=['POST'])
 def create_user():
-    if not is_admin_login(request):  #comment during dbeugging to cr8 users
-        abort(401)
+  #  if not is_admin_login(request):  #comment during dbeugging to cr8 users
+  #      abort(401)
 
     user_name = request.json["user_name"]
     password = request.json["password"]

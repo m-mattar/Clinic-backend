@@ -19,11 +19,20 @@ def book_appointment():
         user_id=decode_token(token)
     except:
         abort(403)  
+    new_time=datetime.strptime(request.json['appointment_time'], '%Y-%m-%dT%H:%M')
+    user_times=Appointment.query.filter_by(appointment_time=new_time).filter_by(patient_id=user_id).first()
+    doc_times=Appointment.query.filter_by(appointment_time=new_time).filter_by(doctor_name=request.json['doctor_name']).first()
+    if(doc_times!=None):
+        return "doctor has a conflict"
+    if(user_times!=None):
+        return "patient has a conflict"
+    
     doctor_name = request.json["doctor_name"]
     patient_id = user_id
-    appointment_time = request.json["appointment_date"]
+    patient_name=User.query.filter_by(id=user_id).first().user_name
+    appointment_time = request.json["appointment_time"]
     appointment_description = request.json["appointment_description"]
-    appo = Appointment(doctor_name, patient_id, appointment_time, appointment_description)
+    appo = Appointment(doctor_name, patient_id, appointment_time, appointment_description, patient_name)
     db.session.add(appo)
     db.session.commit()
     return jsonify(appointment_schema.dump(appo))
@@ -37,7 +46,13 @@ def doctor_appointments():
     except:
         abort(403)  
     appt=Appointment.query.filter_by(doctor_name=request.json['doctor_name']).all()
-    ret=jsonify(appointments_schema.dump(appt))
+    if(appt==None):
+        return "there are no appointments for this name"
+    ka=appointments_schema.dump(appt)
+    print(ka)
+    newlist=sorted(ka, key=lambda k: k['appointment_time']) 
+    #sort(k)
+    ret=jsonify(newlist)
     return ret
 @app_appointment.route('/appointment', methods=['PATCH'])
 def update_appt():
@@ -115,26 +130,13 @@ def get():
     #patient=User.query.filter_by(user_name=request['user_name']).first().id
     print(user_id)
     ar=Appointment.query.filter_by(patient_id=user_id).all()
-    print(ar)
-    ret=jsonify(appointments_schema.dump(ar))
+    ka=appointments_schema.dump(ar)
+    newlist=sorted(ka, key=lambda k: k['appointment_time']) 
+    #sort(k)
+    ret=jsonify(newlist)
     return ret
         
-@app_appointment.route('/appointment_drs', methods=['GET'])
-def getDrsApts():
-    token=extract_auth_token(request)
-    user_id=None
-    if(token==None):
-        abort(403)
-    try:
-        user_id=decode_token(token)
-    except:
-        abort(403)
-    print(user_id)
-    ar=Appointment.query.filter_by(doctor_name=User.query.filter_by(id=user_id).first().user_name).all()
-    print(ar)
-    ret=jsonify(appointments_schema.dump(ar))
-    return ret
-        
+
 		
 
     
