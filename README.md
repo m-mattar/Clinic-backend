@@ -49,8 +49,10 @@ You have successfully initialized your database!
 
 ### Step 5 : Run the Backend
 In order to run the Backend, you need to enter the following commands in your Command Prompt:
+```
 set FLASK_APP=server.py
 flask run
+```
 
 Your backend is now running on port 5000!
 
