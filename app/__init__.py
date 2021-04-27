@@ -13,10 +13,8 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@localhost:3306/hospital'
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:finally@localhost:3306/hospital'
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Arsenal.123@localhost:3306/hospital'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:1234567qW!@localhost:3306/hospital'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost:3306/hospital'
+
     db.init_app(app)
     ma.init_app(app)
     bcrypt.init_app(app)
