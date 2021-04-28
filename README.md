@@ -22,13 +22,13 @@ You could also create a virtual environment and install Flask within it, if so, 
 In order to clone the backend repository :
 Create a new folder, anywhere in your PC
 Open Command Prompt and change the directory into the folder created
-Enter : `git clone https://github.com/m-mattar/430-project-backend`
+Enter : `git clone https://github.com/m-mattar/Clinic-backend`
 
 ### Step 3 : Install Packages
 All the direct and transitive dependencies are available in the `requirements.txt` file
 
 Using the Command Prompt, Enter : `pip install -r requirements.txt`
-Make sure that the Command Prompt is pointing to the "430-project-backend" folder
+Make sure that the Command Prompt is pointing to the "Clinic-backend" folder
 
 ### Step 4 : Initialize the local database
 To make things simple, all database models are available in the `initializer.py` file
